@@ -18,14 +18,23 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="label,allowBackup">
-        <activity android:name=".HomeActivity">
+        <activity android:name=".WelcomePageActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"
-                    android:theme="@style/AppTheme.NoActionBar"
-                    android:windowSoftInputMode="adjustPan" />
+                <action android:name="android.intent.action.MAIN"/>
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".LoginActivity"
+            android:parentActivityName=".WelcomePageActivity"/>
+        <activity android:name=".SignUpActivity"
+            android:parentActivityName=".WelcomePageActivity"/>
+        <activity
+            android:name=".HomeActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan" />
+        <activity android:name=".ResetPassword" />
+        <activity android:name=".ResetPassword2" />
         <activity
             android:name=".ClassroomFinder"
             android:label="@string/title_activity_classroom_finder"

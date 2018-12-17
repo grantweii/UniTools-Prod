@@ -4,6 +4,13 @@
     android:layout_height="match_parent"
     android:background="@color/pale_red">
 
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/logout_icon"
+        android:layout_alignParentRight="true"
+        android:onClick="logoutClicked"/>
+
     <Button
         android:id="@+id/classFinderButton"
         android:layout_width="160dp"
