@@ -1,3 +1,214 @@
 <resources>
+
     <string name="app_name">uni-tools-prod</string>
+    <string-array name="faculties">
+        <item>ACCT</item>
+        <item>ACTL</item>
+        <item>AERO</item>
+        <item>ANAT</item>
+        <item>ARCH</item>
+        <item>ARTS</item>
+        <item>ATSI</item>
+        <item>AVEN</item>
+        <item>AVIA</item>
+        <item>AVIF</item>
+        <item>AVIG</item>
+        <item>BABS</item>
+        <item>BEES</item>
+        <item>BEIL</item>
+        <item>BENV</item>
+        <item>BINF</item>
+        <item>BIOC</item>
+        <item>BIOM</item>
+        <item>BIOS</item>
+        <item>BLDG</item>
+        <item>CEIC</item>
+        <item>CHEM</item>
+        <item>CHEN</item>
+        <item>CLIM</item>
+        <item>CODE</item>
+        <item>COMD</item>
+        <item>COMM</item>
+        <item>COMP</item>
+        <item>CONS</item>
+        <item>CRIM</item>
+        <item>CVEN</item>
+        <item>DATA</item>
+        <item>DIPP</item>
+        <item>ECON</item>
+        <item>EDST</item>
+        <item>ELEC</item>
+        <item>ENGG</item>
+        <item>EXCH</item>
+        <item>FINS</item>
+        <item>FNDN</item>
+        <item>FOOD</item>
+        <item>GENC</item>
+        <item>GENL</item>
+        <item>GENM</item>
+        <item>GENS</item>
+        <item>GENY</item>
+        <item>GEOS</item>
+        <item>GMAT</item>
+        <item>GSOE</item>
+        <item>HDAT</item>
+        <item>HESC</item>
+        <item>HUMS</item>
+        <item>IDES</item>
+        <item>IEST</item>
+        <item>INFS</item>
+        <item>INST</item>
+        <item>INTA</item>
+        <item>JURD</item>
+        <item>LAND</item>
+        <item>LAWS</item>
+        <item>LING</item>
+        <item>MANF</item>
+        <item>MARK</item>
+        <item>MATH</item>
+        <item>MATS</item>
+        <item>MBAX</item>
+        <item>MDCN</item>
+        <item>MDIA</item>
+        <item>MECH</item>
+        <item>MFAC</item>
+        <item>MFIN</item>
+        <item>MGMT</item>
+        <item>MICR</item>
+        <item>MINE</item>
+        <item>MMAN</item>
+        <item>MMGT</item>
+        <item>MNGT</item>
+        <item>MNNG</item>
+        <item>MODL</item>
+        <item>MSCI</item>
+        <item>MTRN</item>
+        <item>MUPS</item>
+        <item>MUSC</item>
+        <item>NANO</item>
+        <item>NEUR</item>
+        <item>OPTM</item>
+        <item>PATH</item>
+        <item>PHAR</item>
+        <item>PHCM</item>
+        <item>PHOP</item>
+        <item>PHSL</item>
+        <item>PHTN</item>
+        <item>PHYS</item>
+        <item>PLAN</item>
+        <item>POLS</item>
+        <item>POLY</item>
+        <item>PPEC</item>
+        <item>PSCY</item>
+        <item>PSYC</item>
+        <item>PTRL</item>
+        <item>REGZ</item>
+        <item>REST</item>
+        <item>RISK</item>
+        <item>SCIF</item>
+        <item>SENG</item>
+        <item>SOCF</item>
+        <item>SOCW</item>
+        <item>SOLA</item>
+        <item>SOMS</item>
+        <item>SRAP</item>
+        <item>SUSD</item>
+        <item>SWCH</item>
+        <item>TABL</item>
+        <item>TELE</item>
+        <item>UDES</item>
+        <item>VISN</item>
+        <item>YENG</item>
+        <item>YMED</item>
+        <item>ADAD</item>
+        <item>DART</item>
+        <item>DDES</item>
+        <item>SAHT</item>
+        <item>SART</item>
+        <item>SDES</item>
+        <item>SOMA</item>
+        <item>ZBUS</item>
+        <item>ZEIT</item>
+        <item>ZGEN</item>
+        <item>ZHSS</item>
+        <item>ZINT</item>
+        <item>ZPEM</item>
+    </string-array>
+
+    <string-array name="semesters">
+        <item>Summer</item>
+        <item>T1</item>
+        <item>T2</item>
+        <item>T3</item>
+    </string-array>
+
+    <string-array name="times">
+        <item>08:00</item>
+        <item>09:00</item>
+        <item>10:00</item>
+        <item>11:00</item>
+        <item>12:00</item>
+        <item>13:00</item>
+        <item>14:00</item>
+        <item>15:00</item>
+        <item>16:00</item>
+        <item>17:00</item>
+        <item>18:00</item>
+        <item>19:00</item>
+        <item>20:00</item>
+        <item>21:00</item>
+        <item>22:00</item>
+    </string-array>
+
+    <string-array name="buildings">
+        <item>None Selected</item>
+        <item>ADFA Campus</item>
+        <item>Ainsworth Building</item>
+        <item>Arts and Design</item>
+        <item>Biological Science</item>
+        <item>Central Lecture Block</item>
+        <item>Chemical Sciences</item>
+        <item>Civil Engineering</item>
+        <item>College of Fine Arts</item>
+        <item>Colombo</item>
+        <item>Computer Science and Eng</item>
+        <item>Electrical Engineering</item>
+        <item>Goldstein</item>
+        <item>Heffron Building</item>
+        <item>Huts</item>
+        <item>John Goodsell</item>
+        <item>Law</item>
+        <item>Library Stage 2</item>
+        <item>Materials Science</item>
+        <item>Mathews</item>
+        <item>Morven Brown</item>
+        <item>Old Main Building</item>
+        <item>Quadrangle</item>
+        <item>Red Centre East</item>
+        <item>Red Centre West</item>
+        <item>Rupert Myers</item>
+        <item>Samuels</item>
+        <item>Square House</item>
+        <item>Tyree Energy Technology Building</item>
+        <item>UNSW Business School</item>
+        <item>Webster</item>
+        <item>Western Grounds</item>
+        <item>Wurth</item>
+    </string-array>
+
+    <string-array name="days">
+        <item>None Selected</item>
+        <item>Monday</item>
+        <item>Tuesday</item>
+        <item>Wednesday</item>
+        <item>Thursday</item>
+        <item>Friday</item>
+        <item>Saturday</item>
+        <item>Sunday</item>
+    </string-array>
+    <string name="title_activity_class_list">classList</string>
+    <string name="title_activity_enrolment_finder">EnrolmentFinder</string>
+    <string name="title_activity_enrol_list">EnrolList</string>
+    <string name="title_activity_classroom_finder">ClassroomFinder</string>
+
 </resources>

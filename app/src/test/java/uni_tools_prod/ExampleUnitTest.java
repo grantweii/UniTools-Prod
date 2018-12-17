@@ -1,4 +1,4 @@
-package com.example.grant.uni_tools_prod;
+package uni_tools_prod;
 
 import org.junit.Test;
 

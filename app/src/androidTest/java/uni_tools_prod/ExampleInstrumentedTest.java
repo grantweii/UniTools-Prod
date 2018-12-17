@@ -1,4 +1,4 @@
-package com.example.grant.uni_tools_prod;
+package uni_tools_prod;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

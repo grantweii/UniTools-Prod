@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    tools:context=".ClassroomFinder">
+
+    <Spinner
+        android:id="@+id/start_spin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignTop="@+id/startTime"
+        android:layout_marginStart="99dp"
+        android:entries="@array/times"></Spinner>
+
+    <Spinner
+        android:id="@+id/end_spin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/start_spin"
+        android:layout_alignTop="@+id/endTime"
+        android:entries="@array/times"></Spinner>
+
+    <Spinner
+        android:id="@+id/day_spin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/start_spin"
+        android:layout_marginTop="168dp"
+        android:entries="@array/days"></Spinner>
+
+    <Spinner
+        android:id="@+id/building_spin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/start_spin"
+        android:layout_alignTop="@+id/textView2"
+        android:entries="@array/buildings"></Spinner>
+
+    <TextView
+        android:id="@+id/startTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="80dp"
+        android:text="Start Time: "
+        android:textColor="@android:color/black" />
+
+    <TextView
+        android:id="@+id/endTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="113dp"
+        android:text="End Time: "
+        android:textColor="@android:color/black" />
+
+    <!--<TextView-->
+        <!--android:id="@+id/header"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentTop="true"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:layout_marginTop="38dp"-->
+        <!--android:ems="10"-->
+        <!--android:text="Class Room Search Tool"-->
+        <!--android:textColor="@android:color/black" />-->
+
+    <TextView
+        android:id="@+id/day"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/day_spin"
+        android:layout_alignParentStart="true"
+        android:text="Day: "
+        android:textColor="@android:color/black" />
+
+    <Button
+        android:id="@+id/submitForm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:text="Submit" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="204dp"
+        android:text="Building: "
+        android:textColor="@android:color/black" />
+
+
+</RelativeLayout>
