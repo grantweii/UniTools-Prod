@@ -8,16 +8,25 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.parse.FindCallback;
+import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -165,5 +174,140 @@ public class EnrolList extends AppCompatActivity {
         finish();
 
         return true;
+    }
+
+    public void follow(String courseCode, String term) {
+        //save in user's followedCourses array field
+        if (ParseUser.getCurrentUser().getList("followedCourses") != null) {
+            List<String> followedCourses = ParseUser.getCurrentUser().getList("followedCourses");
+            followedCourses.add(courseCode + term);
+            ParseUser.getCurrentUser().put("followedCourses", followedCourses);
+            ParseUser.getCurrentUser().saveInBackground(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    if (e == null) {
+                        Log.i("society", "added to user's followed courses list");
+                    } else {
+                        Log.i("society", "failed to add to user's followed courses list");
+                    }
+                }
+            });
+        } else {
+            //else user has not followed any societies so the list is null
+            List<String> followedCourses = new ArrayList<String>();
+            followedCourses.add(courseCode + term);
+            ParseUser.getCurrentUser().put("followedCourses", followedCourses);
+        }
+
+        //add into courses followers list
+        ParseQuery<ParseObject> courseQuery = new ParseQuery<ParseObject>("Courses");
+        courseQuery.whereEqualTo("courseCode", courseCode);
+        courseQuery.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> objects, ParseException e) {
+                if (e == null && objects.size() == 1) {
+                    //Society object found
+                    //only 1 object should have this society name
+                    for (ParseObject society : objects) {
+                        List<String> followers = society.getList("followers");
+                        if (followers == null) {
+                            followers = new ArrayList<>();
+                        }
+                        followers.add(ParseUser.getCurrentUser().getUsername());
+                        society.put("followers", followers);
+                        society.saveInBackground(new SaveCallback() {
+                            @Override
+                            public void done(ParseException e) {
+                                if (e == null) {
+                                    Log.i("user", "added into course followers");
+                                } else {
+                                    Log.i("user", "failed to add into course followers");
+                                }
+                            }
+                        });
+                    }
+                } else {
+                    Log.i("course query", "not found during follow");
+                }
+            }
+        });
+        //TODO: THE BUTTON NEEDS TO BE SELECTED
+    }
+
+    public void unfollow(String courseCode, String term) {
+        //remove from user's followed courses list
+        if (ParseUser.getCurrentUser().getList("followedCourses") != null) {
+            List<String> followedCourses = ParseUser.getCurrentUser().getList("followedCourses");
+            followedCourses.remove(courseCode+term);
+            ParseUser.getCurrentUser().put("followedCourses", followedCourses);
+            Log.i("followedCourses", "is not null");
+        }
+
+        ParseUser.getCurrentUser().saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e == null) {
+                    Log.i("courses", "removed from user's followed list");
+                } else {
+                    Log.i("courses", "failed to remove from user's followed list");
+                }
+            }
+        });
+
+        //remove from courses followed list
+        ParseQuery<ParseObject> courseQuery = new ParseQuery<ParseObject>("Courses");
+        courseQuery.whereEqualTo("courseCode", courseCode);
+        courseQuery.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> objects, ParseException e) {
+                if (e == null && objects.size() == 1) {
+                    //Course object found
+                    //only 1 object should have this course code
+                    for (ParseObject course : objects) {
+                        List<String> followers = course.getList("followers");
+                        //followers should never be null technically
+                        if (followers == null) {
+                            followers = new ArrayList<>();
+                        }
+                        followers.remove(ParseUser.getCurrentUser().getUsername());
+                        course.put("followers", followers);
+                        course.saveInBackground(new SaveCallback() {
+                            @Override
+                            public void done(ParseException e) {
+                                if (e == null) {
+                                    Log.i("user", "removed from course followers");
+                                } else {
+                                    Log.i("user", "failed to remove from course followers");
+                                }
+                            }
+                        });
+                    }
+                } else {
+                    Log.i("course query", "not found during unfollow");
+                }
+            }
+        });
+        //TODO: THE FOLLOW BUTTON NEEDS TO BE UNSELECTED
+    }
+
+    public void cronJob() {
+        //STEP 1: get all followed course through User class
+        final Set<String> courseSet = new HashSet<String>();
+        ParseQuery<ParseUser> query = ParseUser.getQuery();
+        query.findInBackground(new FindCallback<ParseUser>() {
+            @Override
+            public void done(List<ParseUser> objects, ParseException e) {
+                if (e == null && objects.size() > 0) {
+                    for (ParseUser user : objects) {
+                        List<String> followedCourses = user.getList("followedCourses");
+                        if (followedCourses != null && followedCourses.size() > 0) {
+                            courseSet.addAll(followedCourses);
+                        }
+                    }
+                }
+            }
+        });
+
+        //TODO: STEP 2 - GET request to check if any of the courses in courseSet have a spot available
     }
  }
