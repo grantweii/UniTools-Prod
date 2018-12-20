@@ -1,9 +1,11 @@
 package unsw.uni_tools_prod;
 
 import android.app.Application;
+import android.util.Log;
 
 import com.parse.Parse;
 import com.parse.ParseACL;
+import com.parse.ParseInstallation;
 
 public class ParseStarter extends Application {
 
@@ -26,5 +28,8 @@ public class ParseStarter extends Application {
         defaultACL.setPublicReadAccess(true);
         defaultACL.setPublicWriteAccess(true);
         ParseACL.setDefaultACL(defaultACL, true);
+
+        ParseInstallation.getCurrentInstallation().saveInBackground();
+        Log.i("parseStarter", "onCreate");
     }
 }
