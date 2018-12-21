@@ -294,20 +294,10 @@ public class EnrolList extends AppCompatActivity {
     public void cronJob() {
         //STEP 1: get all followed course through User class
         final Set<String> courseSet = new HashSet<String>();
-        ParseQuery<ParseUser> query = ParseUser.getQuery();
-        query.findInBackground(new FindCallback<ParseUser>() {
-            @Override
-            public void done(List<ParseUser> objects, ParseException e) {
-                if (e == null && objects.size() > 0) {
-                    for (ParseUser user : objects) {
-                        List<String> followedCourses = user.getList("followedCourses");
-                        if (followedCourses != null && followedCourses.size() > 0) {
-                            courseSet.addAll(followedCourses);
-                        }
-                    }
-                }
-            }
-        });
+        if (ParseUser.getCurrentUser().getList("followedCourses") != null) {
+            List<String> followedCourses = ParseUser.getCurrentUser().getList("followedCourses");
+            courseSet.addAll(followedCourses);
+        }
 
         //TODO: STEP 2 - GET request to check if any of the courses in courseSet have a spot available
         TextView t = findViewById(R.id.test);
