@@ -23,6 +23,8 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -42,7 +44,7 @@ public class EnrolList extends AppCompatActivity {
         String term = recv.getExtras().getString("semester");
         String fac = recv.getExtras().getString("faculty");
 
-        if(term.equals("U1")) {
+        if (term.equals("U1")) {
             term = "Summer";
         }
 
@@ -65,7 +67,7 @@ public class EnrolList extends AppCompatActivity {
         colNames.add("  %      ");
 
         TableRow headers = new TableRow(this);
-        for(String s : colNames) {
+        for (String s : colNames) {
             TextView t = new TextView(this);
             t.setText(s);
             t.setTypeface(t.getTypeface(), Typeface.BOLD);
@@ -74,7 +76,7 @@ public class EnrolList extends AppCompatActivity {
         }
         table.addView(headers);
 
-        if(results.isEmpty()) {
+        if (results.isEmpty()) {
             TextView tmp = new TextView(this);
             tmp.setText("Currently No Enrolments For This Semester!");
             TableRow empty = new TableRow(this);
@@ -86,7 +88,7 @@ public class EnrolList extends AppCompatActivity {
         }
 
 
-        for(String i : results) {
+        for (String i : results) {
             View v1 = new View(this);
             v1.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, 1));
             v1.setBackgroundColor(Color.rgb(51, 51, 51));
@@ -104,14 +106,13 @@ public class EnrolList extends AppCompatActivity {
             String courseName = "";
             String html = "<a href=\"https://www.handbook.unsw.edu.au/";
 
-            if(m.find()) {
+            if (m.find()) {
                 courseName = m.group(1);
             }
 
-            if(isUndergrad(courseName)) {
+            if (isUndergrad(courseName)) {
                 html += "undergraduate/courses/2019/";
-            }
-            else {
+            } else {
                 html += "postgraduate/courses/2019/";
             }
 
@@ -131,10 +132,10 @@ public class EnrolList extends AppCompatActivity {
             v2.setBackgroundColor(Color.rgb(51, 51, 51));
             table.addView(v2);
 
-            for(int j = 1; j < t.length; j++) {
+            for (int j = 1; j < t.length; j++) {
                 TableRow details = new TableRow(this);
                 String dets[] = t[j].split(",");
-                for(String k : dets) {
+                for (String k : dets) {
                     TextView t2 = new TextView(this);
                     t2.setText("  " + k + "  ");
                     t2.setTextColor(Color.BLACK);
@@ -147,6 +148,7 @@ public class EnrolList extends AppCompatActivity {
             v3.setBackgroundColor(Color.rgb(51, 51, 51));
             table.addView(v3);
         }
+        cronJob();
     }
 
     public Boolean isUndergrad(String str) {
@@ -159,8 +161,7 @@ public class EnrolList extends AppCompatActivity {
         try {
             ParseObject objects = courseQuery.getFirst();
             result = (Boolean) objects.get("UG");
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -238,7 +239,7 @@ public class EnrolList extends AppCompatActivity {
         //remove from user's followed courses list
         if (ParseUser.getCurrentUser().getList("followedCourses") != null) {
             List<String> followedCourses = ParseUser.getCurrentUser().getList("followedCourses");
-            followedCourses.remove(courseCode+term);
+            followedCourses.remove(courseCode + term);
             ParseUser.getCurrentUser().put("followedCourses", followedCourses);
             Log.i("followedCourses", "is not null");
         }
@@ -309,5 +310,11 @@ public class EnrolList extends AppCompatActivity {
         });
 
         //TODO: STEP 2 - GET request to check if any of the courses in courseSet have a spot available
+        TextView t = findViewById(R.id.test);
+        for(String s : courseSet) {
+            t.setText(s);
+        }
+
+
     }
- }
+}
