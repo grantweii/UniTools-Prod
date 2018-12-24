@@ -143,7 +143,7 @@ public class EnrolList extends AppCompatActivity {
                 }
 
                 for (String k : dets) {
-                    if(k.equals(dets[2]) || k.equals(dets[5])) {
+                    if(k.equals(dets[1]) || k.equals(dets[5])) {
                         continue;
                     }
 
@@ -153,38 +153,36 @@ public class EnrolList extends AppCompatActivity {
                     details.addView(t2);
                 }
 
-                final Button followCourse = new Button(this);
-                // Need to check followedCourse and setText depending on if they are
-                // following the course or not
-
                 Set<String> courseSet = new HashSet<String>();
                 if (ParseUser.getCurrentUser().getList("followedCourses") != null) {
                     List<String> followedCourses = ParseUser.getCurrentUser().getList("followedCourses");
                     courseSet.addAll(followedCourses);
                 }
 
-                // update to courseName_term_classID format later
-                if(courseSet.contains(courseName + recv.getExtras().getString("semester"))) {
+                final Button followCourse = new Button(this);
+                final String followId = courseName + "_" + recv.getExtras().getString("semester") + "_" + dets[2];
+                if(courseSet.contains(followId)) {
                     followCourse.setText(" UNFOLLOW ");
                 }
                 else {
                     followCourse.setText(" FOLLOW ");
                 }
 
-                followCourse.setTag(courseName);
+                followCourse.setTag(followId);
                 followCourse.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent recv = getIntent();
-                        String term = recv.getExtras().getString("semester");
-                        String course = (String) view.getTag();
+                        String info[] = ((String) view.getTag()).split("_");
+                        String course = info[0];
+                        String term = info[1];
+                        String classId = info[2];
 
                         if(followCourse.getText().equals(" UNFOLLOW ")) {
-                            unfollow(course, term);
+                            unfollow(course, term, classId);
                             followCourse.setText(" FOLLOW ");
                         }
                         else {
-                            follow(course, term);
+                            follow(course, term, classId);
                             followCourse.setText(" UNFOLLOW ");
                         }
                     }
@@ -227,11 +225,11 @@ public class EnrolList extends AppCompatActivity {
         return true;
     }
 
-    public void follow(String courseCode, String term) {
+    public void follow(String courseCode, String term, String classId) {
         //save in user's followedCourses array field
         if (ParseUser.getCurrentUser().getList("followedCourses") != null) {
             List<String> followedCourses = ParseUser.getCurrentUser().getList("followedCourses");
-            followedCourses.add(courseCode + term);
+            followedCourses.add(courseCode + "_" + term + "_" + classId);
             ParseUser.getCurrentUser().put("followedCourses", followedCourses);
             ParseUser.getCurrentUser().saveInBackground(new SaveCallback() {
                 @Override
@@ -285,11 +283,11 @@ public class EnrolList extends AppCompatActivity {
         //TODO: THE BUTTON NEEDS TO BE SELECTED
     }
 
-    public void unfollow(String courseCode, String term) {
+    public void unfollow(String courseCode, String term, String classId) {
         //remove from user's followed courses list
         if (ParseUser.getCurrentUser().getList("followedCourses") != null) {
             List<String> followedCourses = ParseUser.getCurrentUser().getList("followedCourses");
-            followedCourses.remove(courseCode + term);
+            followedCourses.remove(courseCode + "_" + term + "_" + classId);
             ParseUser.getCurrentUser().put("followedCourses", followedCourses);
             Log.i("followedCourses", "is not null");
         }
