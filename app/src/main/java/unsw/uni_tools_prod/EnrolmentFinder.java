@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -149,12 +150,16 @@ public class EnrolmentFinder extends AppCompatActivity implements AdapterView.On
             i = i.replaceAll("a name=\"", "");
             i = i.replaceAll("\".*?center>", " ");
             i = i.replaceAll("<[^>]+>", " ");
-            i = i.replaceAll("&.*", "");
+            i = i.replaceAll("(N/A)", "$1%");
+            i = i.replaceAll("%.*", "%");
+            i = i.replaceAll("&gt[^0-9]+", "");
             i = i.replaceAll(" Enr ", "  ");
+            i = i.replaceAll(" Rel ", "  ");
             i = i.replaceAll("\\* ", "   ");
-            i = i.replaceAll("  +", ",");
+            i = i.replaceAll("  +", "|");
             i = i.replaceAll(",\n", "\n");
             i = i.replaceAll("([A-Z]{4}[0-9]{4})[^ ]+", "$1");
+            i = i.replaceAll("(N/A)%", "$1");
 
             scrapedList.add(i);
         }

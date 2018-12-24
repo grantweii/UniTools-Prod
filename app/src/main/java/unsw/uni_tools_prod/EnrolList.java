@@ -11,6 +11,7 @@ import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -25,6 +26,10 @@ import com.parse.SaveCallback;
 
 import org.w3c.dom.Text;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -33,7 +38,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class EnrolList extends AppCompatActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,11 +64,10 @@ public class EnrolList extends AppCompatActivity {
 
         ArrayList<String> colNames = new ArrayList<>();
         colNames.add("  Type      ");
-        colNames.add("  Section      ");
         colNames.add("  Class#      ");
         colNames.add("  Status      ");
         colNames.add("  Capacity      ");
-        colNames.add("  %      ");
+        colNames.add("  Follow      ");
 
         TableRow headers = new TableRow(this);
         for (String s : colNames) {
@@ -87,7 +90,6 @@ public class EnrolList extends AppCompatActivity {
             table.addView(empty);
         }
 
-
         for (String i : results) {
             View v1 = new View(this);
             v1.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, 1));
@@ -97,7 +99,7 @@ public class EnrolList extends AppCompatActivity {
             String t[] = i.split("\\r?\\n");
             TableRow name = new TableRow(this);
             TextView t1 = new TextView(this);
-            t[0] = " " + t[0] + " ";
+            t[0] = " " + t[0].replace("|", "") + " ";
             t[0] = t[0].replaceAll("([A-Z]{4}[0-9]{4})(.*)", "$1 -$2");
 
             Pattern course = Pattern.compile("([A-Z]{4}[0-9]{4})");
@@ -134,13 +136,61 @@ public class EnrolList extends AppCompatActivity {
 
             for (int j = 1; j < t.length; j++) {
                 TableRow details = new TableRow(this);
-                String dets[] = t[j].split(",");
+                final String dets[] = t[j].split("\\|");
+
+                if(dets.length < 6) {
+                    continue;
+                }
+
                 for (String k : dets) {
+                    if(k.equals(dets[2]) || k.equals(dets[5])) {
+                        continue;
+                    }
+
                     TextView t2 = new TextView(this);
                     t2.setText("  " + k + "  ");
                     t2.setTextColor(Color.BLACK);
                     details.addView(t2);
                 }
+
+                final Button followCourse = new Button(this);
+                // Need to check followedCourse and setText depending on if they are
+                // following the course or not
+
+                Set<String> courseSet = new HashSet<String>();
+                if (ParseUser.getCurrentUser().getList("followedCourses") != null) {
+                    List<String> followedCourses = ParseUser.getCurrentUser().getList("followedCourses");
+                    courseSet.addAll(followedCourses);
+                }
+
+                // update to courseName_term_classID format later
+                if(courseSet.contains(courseName + recv.getExtras().getString("semester"))) {
+                    followCourse.setText(" UNFOLLOW ");
+                }
+                else {
+                    followCourse.setText(" FOLLOW ");
+                }
+
+                followCourse.setTag(courseName);
+                followCourse.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent recv = getIntent();
+                        String term = recv.getExtras().getString("semester");
+                        String course = (String) view.getTag();
+
+                        if(followCourse.getText().equals(" UNFOLLOW ")) {
+                            unfollow(course, term);
+                            followCourse.setText(" FOLLOW ");
+                        }
+                        else {
+                            follow(course, term);
+                            followCourse.setText(" UNFOLLOW ");
+                        }
+                    }
+                });
+
+                details.addView(followCourse);
                 table.addView(details);
             }
             View v3 = new View(this);
@@ -300,11 +350,30 @@ public class EnrolList extends AppCompatActivity {
         }
 
         //TODO: STEP 2 - GET request to check if any of the courses in courseSet have a spot available
-        TextView t = findViewById(R.id.test);
-        for(String s : courseSet) {
-            t.setText(s);
+        for(String course : courseSet) {
+            String faculty = course.substring(0, 4).toUpperCase();
+            String term = course.substring(8, 10);
+            String url = "http://classutil.unsw.edu.au/" + faculty + "_" + term + ".html";
+
+            // not complete yet
         }
 
 
+    }
+
+    // All credit for the getHTML function goes to Kalpak
+    // Source: https://stackoverflow.com/questions/1485708/how-do-i-do-a-http-get-in-java
+    public String getHTML(String urlToRead) throws Exception {
+        StringBuilder result = new StringBuilder();
+        URL url = new URL(urlToRead);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+        String line;
+        while ((line = rd.readLine()) != null) {
+            result.append(line);
+        }
+        rd.close();
+        return result.toString();
     }
 }
