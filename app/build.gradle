@@ -37,6 +37,8 @@ dependencies {
     implementation "com.github.parse-community.Parse-SDK-Android:parse:1.18.5"
     implementation "com.github.parse-community.Parse-SDK-Android:ktx:1.18.5"
     implementation 'com.google.firebase:firebase-core:16.0.1'
+    implementation 'com.firebase:firebase-jobdispatcher:0.8.5'
+//    implementation 'com.google.firebase:firebase-messaging:17.0.0:15.0.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

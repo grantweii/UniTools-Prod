@@ -17,6 +17,12 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.jobdispatcher.Constraint;
+import com.firebase.jobdispatcher.FirebaseJobDispatcher;
+import com.firebase.jobdispatcher.GooglePlayDriver;
+import com.firebase.jobdispatcher.Job;
+import com.firebase.jobdispatcher.Lifetime;
+import com.firebase.jobdispatcher.Trigger;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -38,6 +44,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class EnrolList extends AppCompatActivity {
+    private int followSuccess = -1;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -196,7 +205,6 @@ public class EnrolList extends AppCompatActivity {
             v3.setBackgroundColor(Color.rgb(51, 51, 51));
             table.addView(v3);
         }
-        cronJob();
     }
 
     public Boolean isUndergrad(String str) {
@@ -227,6 +235,7 @@ public class EnrolList extends AppCompatActivity {
 
     public void follow(String courseCode, String term, String classId) {
         //save in user's followedCourses array field
+
         if (ParseUser.getCurrentUser().getList("followedCourses") != null) {
             List<String> followedCourses = ParseUser.getCurrentUser().getList("followedCourses");
             followedCourses.add(courseCode + "_" + term + "_" + classId);
@@ -236,6 +245,7 @@ public class EnrolList extends AppCompatActivity {
                 public void done(ParseException e) {
                     if (e == null) {
                         Log.i("society", "added to user's followed courses list");
+                        followSuccess++;
                     } else {
                         Log.i("society", "failed to add to user's followed courses list");
                     }
@@ -269,6 +279,7 @@ public class EnrolList extends AppCompatActivity {
                             public void done(ParseException e) {
                                 if (e == null) {
                                     Log.i("user", "added into course followers");
+                                    followSuccess++;
                                 } else {
                                     Log.i("user", "failed to add into course followers");
                                 }
@@ -280,7 +291,13 @@ public class EnrolList extends AppCompatActivity {
                 }
             }
         });
+
+        if (followSuccess == 1) {
+            scheduleJob();
+        }
+
         //TODO: THE BUTTON NEEDS TO BE SELECTED
+
     }
 
     public void unfollow(String courseCode, String term, String classId) {
@@ -339,39 +356,20 @@ public class EnrolList extends AppCompatActivity {
         //TODO: THE FOLLOW BUTTON NEEDS TO BE UNSELECTED
     }
 
-    public void cronJob() {
-        //STEP 1: get all followed course through User class
-        final Set<String> courseSet = new HashSet<String>();
-        if (ParseUser.getCurrentUser().getList("followedCourses") != null) {
-            List<String> followedCourses = ParseUser.getCurrentUser().getList("followedCourses");
-            courseSet.addAll(followedCourses);
-        }
+    public void scheduleJob() {
+        FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(getApplicationContext()));
+        Job job = dispatcher.newJobBuilder()
+                .setService(MyJobService.class)
+                .setRecurring(true)
+                .setReplaceCurrent(true)
+                .setLifetime(Lifetime.FOREVER)
+                .setTrigger(Trigger.executionWindow(0, 60))
+                .setConstraints(
+                        Constraint.ON_ANY_NETWORK
+                ).build();
 
-        //TODO: STEP 2 - GET request to check if any of the courses in courseSet have a spot available
-        for(String course : courseSet) {
-            String faculty = course.substring(0, 4).toUpperCase();
-            String term = course.substring(8, 10);
-            String url = "http://classutil.unsw.edu.au/" + faculty + "_" + term + ".html";
-
-            // not complete yet
-        }
-
+        dispatcher.mustSchedule(job);
 
     }
 
-    // All credit for the getHTML function goes to Kalpak
-    // Source: https://stackoverflow.com/questions/1485708/how-do-i-do-a-http-get-in-java
-    public String getHTML(String urlToRead) throws Exception {
-        StringBuilder result = new StringBuilder();
-        URL url = new URL(urlToRead);
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setRequestMethod("GET");
-        BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-        String line;
-        while ((line = rd.readLine()) != null) {
-            result.append(line);
-        }
-        rd.close();
-        return result.toString();
-    }
 }
