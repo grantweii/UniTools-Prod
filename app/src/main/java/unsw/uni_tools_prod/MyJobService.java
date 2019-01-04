@@ -6,19 +6,26 @@ import android.app.NotificationManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
+<<<<<<< HEAD
 import android.view.View;
+=======
+import android.widget.TextView;
+>>>>>>> 59265a7beb1572fd1ab5c79f2c90ce3f908d2cac
 
 import com.firebase.jobdispatcher.JobParameters;
 import com.firebase.jobdispatcher.JobService;
 import com.parse.ParseUser;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static unsw.uni_tools_prod.ParseStarter.CHANNEL_ID;
 
@@ -60,12 +67,39 @@ public class MyJobService extends JobService {
                 }
 
                 //TODO: STEP 2 - GET request to check if any of the courses in courseSet have a spot available
-                for(String course : courseSet) {
-                    String faculty = course.substring(0, 4).toUpperCase();
-                    String term = course.substring(8, 10);
-                    String url = "http://classutil.unsw.edu.au/" + faculty + "_" + term + ".html";
+                final Set<String> openCourses = new HashSet<String>();
 
-                    // not complete yet
+                for(String course : courseSet) {
+                    String courseInfo[] = course.split("_");
+                    String courseId = courseInfo[0];
+                    String faculty = courseId.substring(0, 4);
+                    String term = courseInfo[1];
+                    String classId = courseInfo[2];
+                    String url = "http://classutil.unsw.edu.au/" + faculty + "_" + term + ".html";
+                    String html = "";
+                    try {
+                        html = getHTML(url);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    String pattern = classId + "<" + ".*?([0-9]+)/(-?[0-9]+)";
+                    if (classId.length() == 4) {
+                        pattern = "> " + pattern;
+                    } else {
+                        pattern = ">" + pattern;
+                    }
+                    Pattern p = Pattern.compile(pattern, Pattern.DOTALL);
+                    Matcher m = p.matcher(html);
+
+                    while (m.find()) {
+                        int enrols = Integer.valueOf(m.group(1));
+                        int capacity = Integer.valueOf(m.group(2));
+
+                        if (capacity - enrols > 0) {
+                            openCourses.add(course);
+                        }
+                    }
                 }
 
                 Log.i(TAG, "Job finished");
