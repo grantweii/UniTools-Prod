@@ -171,36 +171,41 @@ public class EnrolList extends AppCompatActivity {
                     courseSet.addAll(followedCourses);
                 }
 
-                final Button followCourse = new Button(this);
-                final String followId = courseName + "_" + recv.getExtras().getString("semester") + "_" + dets[2];
-                if(courseSet.contains(followId)) {
-                    followCourse.setText(" UNFOLLOW ");
-                }
-                else {
-                    followCourse.setText(" FOLLOW ");
-                }
 
-                followCourse.setTag(followId);
-                followCourse.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        String info[] = ((String) view.getTag()).split("_");
-                        String course = info[0];
-                        String term = info[1];
-                        String classId = info[2];
-
-                        if(followCourse.getText().equals(" UNFOLLOW ")) {
-                            unfollow(course, term, classId);
-                            followCourse.setText(" FOLLOW ");
-                        }
-                        else {
-                            follow(course, term, classId);
-                            followCourse.setText(" UNFOLLOW ");
-                        }
+                String enrolRatio[] = dets[4].split("/");
+                int enrols = Integer.valueOf(enrolRatio[0]);
+                int capacity = Integer.valueOf(enrolRatio[1]);
+                if(capacity - enrols <= 0) {
+                    final Button followCourse = new Button(this);
+                    final String followId = courseName + "_" + recv.getExtras().getString("semester") + "_" + dets[2];
+                    if (courseSet.contains(followId)) {
+                        followCourse.setText(" UNFOLLOW ");
+                    } else {
+                        followCourse.setText(" FOLLOW ");
                     }
-                });
 
-                details.addView(followCourse);
+                    followCourse.setTag(followId);
+                    followCourse.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            String info[] = ((String) view.getTag()).split("_");
+                            String course = info[0];
+                            String term = info[1];
+                            String classId = info[2];
+
+                            if (followCourse.getText().equals(" UNFOLLOW ")) {
+                                unfollow(course, term, classId);
+                                followCourse.setText(" FOLLOW ");
+                            } else {
+                                follow(course, term, classId);
+                                followCourse.setText(" UNFOLLOW ");
+                            }
+                        }
+                    });
+
+                    details.addView(followCourse);
+                }
+
                 table.addView(details);
             }
             View v3 = new View(this);
@@ -295,7 +300,8 @@ public class EnrolList extends AppCompatActivity {
         });
 
         if (followSuccess == 1) {
-            scheduleJob();
+            // @grant commented it out as it was causing the app to crash
+            //scheduleJob();
         }
 
         //TODO: THE BUTTON NEEDS TO BE SELECTED
