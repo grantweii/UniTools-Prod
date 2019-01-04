@@ -1,7 +1,13 @@
 package unsw.uni_tools_prod;
 
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
+import android.view.View;
+
 import com.firebase.jobdispatcher.JobParameters;
 import com.firebase.jobdispatcher.JobService;
 import com.parse.ParseUser;
@@ -14,9 +20,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static unsw.uni_tools_prod.ParseStarter.CHANNEL_ID;
+
 public class MyJobService extends JobService {
     private static final String TAG = "MyJobService";
     private boolean jobCancelled = false;
+    private NotificationManagerCompat notificationManager;
 
     @Override
     public boolean onStartJob(JobParameters params) {
@@ -63,6 +72,22 @@ public class MyJobService extends JobService {
                 jobFinished(params, false);
             }
         }).start();
+    }
+
+    private void sendNotifications(View v) {
+        notificationManager = NotificationManagerCompat.from(this);
+
+        String title = "title";
+        String text = "text";
+
+        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setSmallIcon(R.drawable.notification_icon)
+                .setContentTitle(title)
+                .setContentText(text)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .build();
+
+        notificationManager.notify(1, notification);
     }
 
     // All credit for the getHTML function goes to Kalpak

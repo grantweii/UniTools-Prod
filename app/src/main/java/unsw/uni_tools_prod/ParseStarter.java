@@ -1,6 +1,9 @@
 package unsw.uni_tools_prod;
 
 import android.app.Application;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.os.Build;
 import android.util.Log;
 
 import com.parse.Parse;
@@ -8,6 +11,7 @@ import com.parse.ParseACL;
 import com.parse.ParseInstallation;
 
 public class ParseStarter extends Application {
+    public static final String CHANNEL_ID = "channel";
 
     @Override
     public void onCreate() {
@@ -31,5 +35,18 @@ public class ParseStarter extends Application {
 
         ParseInstallation.getCurrentInstallation().saveInBackground();
         Log.i("parseStarter", "onCreate");
+
+        createNotificationChannel();
+    }
+
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "Enrolment Channel", NotificationManager.IMPORTANCE_HIGH);
+            channel.setDescription("asdf");
+
+            NotificationManager manager = getSystemService(NotificationManager.class);
+            manager.createNotificationChannel(channel);
+
+        }
     }
 }
