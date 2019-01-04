@@ -1,5 +1,8 @@
 package unsw.uni_tools_prod;
 
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -235,7 +238,6 @@ public class EnrolList extends AppCompatActivity {
 
     public void follow(String courseCode, String term, String classId) {
         //save in user's followedCourses array field
-
         if (ParseUser.getCurrentUser().getList("followedCourses") != null) {
             List<String> followedCourses = ParseUser.getCurrentUser().getList("followedCourses");
             followedCourses.add(courseCode + "_" + term + "_" + classId);
