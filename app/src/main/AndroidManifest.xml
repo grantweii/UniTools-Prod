@@ -21,37 +21,9 @@
         tools:replace="label,allowBackup">
 
         <service
-            android:name="com.parse.fcm.ParseFirebaseInstanceIdService"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
-            </intent-filter>
+            android:name=".MyJobService"
+            android:permission="android.permission.BIND_JOB_SERVICE" >
         </service>
-
-        <service
-            android:name="com.parse.fcm.ParseFirebaseMessagingService">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
-            </intent-filter>
-        </service>
-
-        <service
-            android:exported="false"
-            android:name=".MyJobService">
-            <intent-filter>
-                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE"/>
-            </intent-filter>
-        </service>
-
-        <receiver
-            android:name="com.parse.ParsePushBroadcastReceiver"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.parse.push.intent.RECEIVE" />
-                <action android:name="com.parse.push.intent.DELETE" />
-                <action android:name="com.parse.push.intent.OPEN" />
-            </intent-filter>
-        </receiver>
 
         <activity android:name=".WelcomePageActivity">
             <intent-filter>
@@ -86,6 +58,7 @@
             android:name=".EnrolList"
             android:label="@string/title_activity_enrol_list"
             android:theme="@style/AppTheme.NoActionBar" />
+
     </application>
 
 </manifest>

@@ -96,6 +96,7 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.MyViewHold
             public void done(ParseException e) {
                 if (e == null) {
                     Log.i("course", "removed from user's followed list");
+                    refreshDataSet(courseCodeTerm);
                 } else {
                     Log.i("course", "failed to remove from user's followed list");
                 }
@@ -129,7 +130,6 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.MyViewHold
                             public void done(ParseException e) {
                                 if (e == null) {
                                     Log.i("user", "removed from course followers");
-                                    refreshDataSet(courseCodeTerm);
                                 } else {
                                     Log.i("user", "failed to remove from course followers");
                                 }

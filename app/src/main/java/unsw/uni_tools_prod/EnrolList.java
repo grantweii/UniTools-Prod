@@ -20,12 +20,6 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.firebase.jobdispatcher.Constraint;
-import com.firebase.jobdispatcher.FirebaseJobDispatcher;
-import com.firebase.jobdispatcher.GooglePlayDriver;
-import com.firebase.jobdispatcher.Job;
-import com.firebase.jobdispatcher.Lifetime;
-import com.firebase.jobdispatcher.Trigger;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -364,20 +358,20 @@ public class EnrolList extends AppCompatActivity {
         //TODO: THE FOLLOW BUTTON NEEDS TO BE UNSELECTED
     }
 
-    public void scheduleJob() {
-        FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(getApplicationContext()));
-        Job job = dispatcher.newJobBuilder()
-                .setService(MyJobService.class)
-                .setRecurring(true)
-                .setReplaceCurrent(true)
-                .setLifetime(Lifetime.FOREVER)
-                .setTrigger(Trigger.executionWindow(0, 60))
-                .setConstraints(
-                        Constraint.ON_ANY_NETWORK
-                ).build();
-
-        dispatcher.mustSchedule(job);
-
-    }
+//    public void scheduleJob() {
+//        FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(getApplicationContext()));
+//        Job job = dispatcher.newJobBuilder()
+//                .setService(MyJobService.class)
+//                .setRecurring(true)
+//                .setReplaceCurrent(true)
+//                .setLifetime(Lifetime.FOREVER)
+//                .setTrigger(Trigger.executionWindow(0, 60))
+//                .setConstraints(
+//                        Constraint.ON_ANY_NETWORK
+//                ).build();
+//
+//        dispatcher.mustSchedule(job);
+//
+//    }
 
 }

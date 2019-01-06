@@ -3,17 +3,16 @@ package unsw.uni_tools_prod;
 
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.job.JobParameters;
+import android.app.job.JobService;
+import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
-<<<<<<< HEAD
 import android.view.View;
-=======
 import android.widget.TextView;
->>>>>>> 59265a7beb1572fd1ab5c79f2c90ce3f908d2cac
 
-import com.firebase.jobdispatcher.JobParameters;
-import com.firebase.jobdispatcher.JobService;
 import com.parse.ParseUser;
 
 import java.io.BufferedReader;
@@ -37,6 +36,7 @@ public class MyJobService extends JobService {
     @Override
     public boolean onStartJob(JobParameters params) {
         doBackgroundWork(params);
+        Log.i(TAG, "onStartJob");
         return false;
     }
 
@@ -56,6 +56,7 @@ public class MyJobService extends JobService {
                 }
 
                 //STEP 1: get all followed course through User class
+                Log.i(TAG, "Job STEP 1");
                 final Set<String> courseSet = new HashSet<String>();
                 if (ParseUser.getCurrentUser().getList("followedCourses") != null && ParseUser.getCurrentUser().getList("followedCourses").size() > 0) {
                     List<String> followedCourses = ParseUser.getCurrentUser().getList("followedCourses");
@@ -67,6 +68,7 @@ public class MyJobService extends JobService {
                 }
 
                 //TODO: STEP 2 - GET request to check if any of the courses in courseSet have a spot available
+                Log.i(TAG, "Job STEP 2");
                 final Set<String> openCourses = new HashSet<String>();
 
                 for(String course : courseSet) {
@@ -102,26 +104,44 @@ public class MyJobService extends JobService {
                     }
                 }
 
+                Log.i(TAG, "Job STEP 3");
+                int notificationCount = 0;
+                for (String openCourse: openCourses) {
+                    String[] splitString = openCourse.split("_");
+                    String course = splitString[0];
+                    String term = splitString[1];
+                    String classId = splitString[2];
+
+                    Log.i(TAG, course + " has a spot");
+                    sendNotification(course, term, classId, notificationCount);
+                    notificationCount++;
+                }
+
                 Log.i(TAG, "Job finished");
                 jobFinished(params, false);
             }
         }).start();
     }
 
-    private void sendNotifications(View v) {
+    private void sendNotification(String course, String term, String classId, int notificationCount) {
         notificationManager = NotificationManagerCompat.from(this);
 
-        String title = "title";
-        String text = "text";
+        String title = course + " " + term;
+        String text = "A spot has opened up in class " + classId;
 
+        Intent activityIntent = new Intent(this, HomeActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, activityIntent, 0);
+
+        //uses channel id if API 26 or higher, otherwise ignores this
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setSmallIcon(R.drawable.notification_icon)
                 .setContentTitle(title)
                 .setContentText(text)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setContentIntent(contentIntent)
                 .build();
 
-        notificationManager.notify(1, notification);
+        notificationManager.notify(notificationCount, notification);
     }
 
     // All credit for the getHTML function goes to Kalpak
@@ -139,4 +159,5 @@ public class MyJobService extends JobService {
         rd.close();
         return result.toString();
     }
+
 }
