@@ -45,6 +45,7 @@ public class HomeActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private CourseAdapter courseAdapter;
     private List<Course> courseList = new ArrayList<>();
+    private Button scheduleJobButton;
 
 
     @Override
@@ -53,6 +54,7 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
 
         ParseAnalytics.trackAppOpenedInBackground(getIntent());
+        scheduleJobButton = findViewById(R.id.scheduleJobButton);
 
         Button classFinderButton = findViewById(R.id.classFinderButton);
         classFinderButton.setOnClickListener(new View.OnClickListener() {
@@ -79,8 +81,6 @@ public class HomeActivity extends AppCompatActivity {
         recyclerView.setAdapter(courseAdapter);
         getFollowedCourses();
         courseAdapter.notifyDataSetChanged();
-
-        scheduleJob();
     }
 
     @Override
@@ -109,19 +109,22 @@ public class HomeActivity extends AppCompatActivity {
 
     public void getFollowedCourses() {
         int count = 0;
-        Log.i("eneters", "true");
+        Log.i("enters", "true");
 
         if (ParseUser.getCurrentUser().getList("followedCourses") != null) {
-            Log.i("asd", "true");
             List<String> followedCourses = ParseUser.getCurrentUser().getList("followedCourses");
             for (String courseCodeTerm: followedCourses) {
                 Log.i("count", Integer.toString(count++));
                 courseList.add(new Course(courseCodeTerm));
             }
+
+            if (followedCourses.size() > 0) {
+                scheduleJobButton.setVisibility(View.VISIBLE);
+            }
         }
     }
 
-    public void scheduleJob() {
+    public void scheduleJob(View view) {
         ComponentName componentName = new ComponentName(this, MyJobService.class);
         JobInfo info = new JobInfo.Builder(123, componentName)
                 .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)

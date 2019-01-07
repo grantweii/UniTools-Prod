@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="4dp"
     android:background="@color/pale_red">
 
     <ImageButton
@@ -31,12 +32,33 @@
         android:layout_weight="1"
         android:text="Enrolment Finder" />
 
+    <TextView
+        android:id="@+id/followedCoursesTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Followed Courses"
+        android:textSize="18sp"
+        android:layout_below="@+id/enrolButton"
+        android:layout_marginTop="24dp"
+        android:textColor="@color/black"/>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="200dp"
+        android:layout_below="@+id/followedCoursesTextView"
+        android:layout_marginTop="16dp"
         android:clipToPadding="false"
         android:scrollbars="vertical" />
+
+    <Button
+        android:id="@+id/scheduleJobButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Notify me when spots are available"
+        android:layout_below="@+id/recyclerView"
+        android:layout_marginTop="16dp"
+        android:onClick="scheduleJob"
+        android:visibility="invisible"/>
 
 </RelativeLayout>
