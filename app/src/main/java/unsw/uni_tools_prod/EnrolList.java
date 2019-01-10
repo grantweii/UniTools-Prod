@@ -1,8 +1,5 @@
 package unsw.uni_tools_prod;
 
-import android.app.job.JobInfo;
-import android.app.job.JobScheduler;
-import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -18,7 +15,6 @@ import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -27,12 +23,6 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
-import org.w3c.dom.Text;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -66,7 +56,7 @@ public class EnrolList extends AppCompatActivity {
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-        TableLayout table = findViewById(R.id.enrolTable);
+        final TableLayout table = findViewById(R.id.enrolTable);
 
         ArrayList<String> colNames = new ArrayList<>();
         colNames.add("  Type      ");
@@ -104,7 +94,7 @@ public class EnrolList extends AppCompatActivity {
 
             String t[] = i.split("\\r?\\n");
             TableRow name = new TableRow(this);
-            TextView t1 = new TextView(this);
+            final TextView t1 = new TextView(this);
             t[0] = " " + t[0].replace("|", "") + " ";
             t[0] = t[0].replaceAll("([A-Z]{4}[0-9]{4})(.*)", "$1 -$2");
 
@@ -133,6 +123,13 @@ public class EnrolList extends AppCompatActivity {
             t1.setLayoutParams(params);
             t1.setTypeface(t1.getTypeface(), Typeface.BOLD);
             name.addView(t1);
+
+            final TextView expand = new TextView(this);
+            expand.setText(" + ");
+            expand.setClickable(true);
+            final ArrayList<TableRow> elements = new ArrayList();
+            name.addView(expand);
+
             table.addView(name);
 
             View v2 = new View(this);
@@ -141,7 +138,7 @@ public class EnrolList extends AppCompatActivity {
             table.addView(v2);
 
             for (int j = 1; j < t.length; j++) {
-                TableRow details = new TableRow(this);
+                final TableRow details = new TableRow(this);
                 final String dets[] = t[j].split("\\|");
 
                 if(dets.length < 6) {
@@ -200,8 +197,30 @@ public class EnrolList extends AppCompatActivity {
                     details.addView(followCourse);
                 }
 
+                details.setVisibility(View.GONE);
                 table.addView(details);
+                elements.add(details);
             }
+
+            View.OnClickListener onclicklistener = new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Integer visib = View.GONE;
+                    if(expand.getText() == " - ") {
+                        expand.setText(" + ");
+                    }
+                    else {
+                        expand.setText(" - ");
+                        visib = View.VISIBLE;
+                    }
+
+                    for(TableRow i : elements) {
+                        i.setVisibility(visib);
+                    }
+                }
+            };
+            expand.setOnClickListener(onclicklistener);
+
             View v3 = new View(this);
             v3.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, 1));
             v3.setBackgroundColor(Color.rgb(51, 51, 51));
