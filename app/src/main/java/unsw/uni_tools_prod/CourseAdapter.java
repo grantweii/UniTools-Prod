@@ -58,6 +58,7 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.MyViewHold
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         final Course course = courses.get(position);
+
         holder.courseCodeTerm.setText(course.getCodeTerm());
 
         holder.deleteCourseButton.setOnClickListener(new View.OnClickListener() {
