@@ -42,6 +42,17 @@
         android:layout_marginTop="24dp"
         android:textColor="@color/black"/>
 
+    <TextView
+        android:id="@+id/suggestionTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/followedCoursesTextView"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:text="No courses/classes followed. Follow a course or class to get notified when a spot opens up!"
+        android:textStyle="italic" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"

@@ -50,8 +50,6 @@ public class WelcomePageActivity extends AppCompatActivity implements View.OnCli
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome_page);
 
-        setTitle("UniTools");
-
         loginTextView = (TextView) findViewById(R.id.loginTextView);
         loginTextView.setOnClickListener(this);
         ImageView logoImageView = (ImageView) findViewById(R.id.logoImageView);

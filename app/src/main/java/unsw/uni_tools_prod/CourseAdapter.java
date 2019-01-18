@@ -103,47 +103,6 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.MyViewHold
                 }
             }
         });
-
-        Pattern pattern = Pattern.compile("([A-Z]{4}[0-9]{4})");
-        Matcher matcher = pattern.matcher(courseCodeTerm);
-        matcher.find();
-        String courseCode = matcher.group(1);
-
-        //remove from courses followed list
-        ParseQuery<ParseObject> courseQuery = new ParseQuery<ParseObject>("Courses");
-        courseQuery.whereEqualTo("courseCode", courseCode);
-        courseQuery.findInBackground(new FindCallback<ParseObject>() {
-            @Override
-            public void done(List<ParseObject> objects, ParseException e) {
-                if (e == null && objects.size() == 1) {
-                    //Course object found
-                    //only 1 object should have this course code
-                    for (ParseObject course : objects) {
-                        List<String> followers = course.getList("followers");
-                        //followers should never be null technically
-                        if (followers == null) {
-                            followers = new ArrayList<>();
-                        }
-                        followers.remove(ParseUser.getCurrentUser().getUsername());
-                        course.put("followers", followers);
-                        course.saveInBackground(new SaveCallback() {
-                            @Override
-                            public void done(ParseException e) {
-                                if (e == null) {
-                                    Log.i("user", "removed from course followers");
-                                } else {
-                                    Log.i("user", "failed to remove from course followers");
-                                }
-                            }
-                        });
-                    }
-                } else {
-                    Log.i("course query", "not found during unfollow");
-                }
-            }
-        });
-        //TODO: THE FOLLOW BUTTON NEEDS TO BE UNSELECTED
-
     }
 
     @Override
