@@ -36,6 +36,7 @@
             android:parentActivityName=".WelcomePageActivity"/>
         <activity android:name=".SignUpActivity"
             android:parentActivityName=".WelcomePageActivity"/>
+        <activity android:name=".SliderTutorial"/>
         <activity
             android:name=".HomeActivity"
             android:theme="@style/AppTheme.NoActionBar"
