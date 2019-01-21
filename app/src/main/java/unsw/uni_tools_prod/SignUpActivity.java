@@ -102,7 +102,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                         @Override
                         public void done(ParseException e) {
                             if (e == null) {
-                                showHomePage();
+                                showSliderTutorial();
                                 //REMOVING EMAIL VERIFICATION AT SIGN UP
                                 //if successfully sent email, have user input code
                                 //insertCode();
@@ -119,8 +119,8 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     }
 
 
-    public void showHomePage() {
-        Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+    public void showSliderTutorial() {
+        Intent intent = new Intent(getApplicationContext(), SliderTutorial.class);
         startActivity(intent);
     }
 

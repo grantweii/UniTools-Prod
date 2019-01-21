@@ -11,15 +11,19 @@ import android.content.Intent;
 import android.nfc.Tag;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.parse.ParseAnalytics;
 import com.parse.ParseException;
@@ -46,6 +50,7 @@ public class HomeActivity extends AppCompatActivity {
     private CourseAdapter courseAdapter;
     private List<Course> courseList = new ArrayList<>();
     private Button scheduleJobButton;
+    private TextView suggestionTextView;
 
 
     @Override
@@ -55,6 +60,7 @@ public class HomeActivity extends AppCompatActivity {
 
         ParseAnalytics.trackAppOpenedInBackground(getIntent());
         scheduleJobButton = findViewById(R.id.scheduleJobButton);
+        suggestionTextView = findViewById(R.id.suggestionTextView);
 
         Button classFinderButton = findViewById(R.id.classFinderButton);
         classFinderButton.setOnClickListener(new View.OnClickListener() {
@@ -74,6 +80,7 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
+
         recyclerView = findViewById(R.id.recyclerView);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
@@ -81,6 +88,16 @@ public class HomeActivity extends AppCompatActivity {
         recyclerView.setAdapter(courseAdapter);
         getFollowedCourses();
         courseAdapter.notifyDataSetChanged();
+        Log.i(TAG, "oncreate");
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        courseList.clear();
+        getFollowedCourses();
+        courseAdapter.notifyDataSetChanged();
+        Log.i(TAG,"onrestart");
     }
 
     @Override
@@ -109,7 +126,6 @@ public class HomeActivity extends AppCompatActivity {
 
     public void getFollowedCourses() {
         int count = 0;
-        Log.i("enters", "true");
 
         if (ParseUser.getCurrentUser().getList("followedCourses") != null) {
             List<String> followedCourses = ParseUser.getCurrentUser().getList("followedCourses");
@@ -120,6 +136,10 @@ public class HomeActivity extends AppCompatActivity {
 
             if (followedCourses.size() > 0) {
                 scheduleJobButton.setVisibility(View.VISIBLE);
+                suggestionTextView.setVisibility(View.GONE);
+            } else {
+                scheduleJobButton.setVisibility(View.INVISIBLE);
+                suggestionTextView.setVisibility(View.VISIBLE);
             }
         }
     }

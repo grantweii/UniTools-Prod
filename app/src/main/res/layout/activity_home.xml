@@ -1,24 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/relativeLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="4dp"
-    android:background="@color/pale_red">
+    android:background="@color/pale_red"
+    android:padding="4dp">
 
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/logout_icon"
         android:layout_alignParentRight="true"
-        android:onClick="logoutClicked"/>
+        android:onClick="logoutClicked"
+        android:src="@drawable/logout_icon" />
 
     <Button
         android:id="@+id/classFinderButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:layout_centerHorizontal="true"
         android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
         android:layout_weight="1"
         android:text="Classroom Finder"></Button>
 
@@ -36,11 +37,22 @@
         android:id="@+id/followedCoursesTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Followed Courses"
-        android:textSize="18sp"
         android:layout_below="@+id/enrolButton"
         android:layout_marginTop="24dp"
-        android:textColor="@color/black"/>
+        android:text="Followed Courses"
+        android:textColor="@color/black"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/suggestionTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/followedCoursesTextView"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginRight="16dp"
+        android:text="No courses/classes followed. Follow a course or class to get notified when a spot opens up!"
+        android:textStyle="italic" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"
@@ -55,10 +67,10 @@
         android:id="@+id/scheduleJobButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Notify me when spots are available"
         android:layout_below="@+id/recyclerView"
         android:layout_marginTop="16dp"
         android:onClick="scheduleJob"
-        android:visibility="invisible"/>
+        android:text="Notify me when spots are available"
+        android:visibility="invisible" />
 
 </RelativeLayout>

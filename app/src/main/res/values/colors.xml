@@ -6,5 +6,5 @@
     <color name="pale_red">#FFE2E2</color>
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
-
+    <color name="transparent_white">#cccccc</color>
 </resources>

@@ -34,7 +34,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class EnrolList extends AppCompatActivity {
-    private int followSuccess = -1;
+    private boolean followSuccess = false;
 
 
     @Override
@@ -298,7 +298,7 @@ public class EnrolList extends AppCompatActivity {
                 public void done(ParseException e) {
                     if (e == null) {
                         Log.i("society", "added to user's followed courses list");
-                        followSuccess++;
+                        followSuccess = true;
                     } else {
                         Log.i("society", "failed to add to user's followed courses list");
                     }
@@ -307,50 +307,9 @@ public class EnrolList extends AppCompatActivity {
         } else {
             //else user has not followed any societies so the list is null
             List<String> followedCourses = new ArrayList<String>();
-            followedCourses.add(courseCode + term);
+            followedCourses.add(courseCode + "_" + term + "_" + classId);
             ParseUser.getCurrentUser().put("followedCourses", followedCourses);
         }
-
-        //add into courses followers list
-        ParseQuery<ParseObject> courseQuery = new ParseQuery<ParseObject>("Courses");
-        courseQuery.whereEqualTo("courseCode", courseCode);
-        courseQuery.findInBackground(new FindCallback<ParseObject>() {
-            @Override
-            public void done(List<ParseObject> objects, ParseException e) {
-                if (e == null && objects.size() == 1) {
-                    //Society object found
-                    //only 1 object should have this society name
-                    for (ParseObject society : objects) {
-                        List<String> followers = society.getList("followers");
-                        if (followers == null) {
-                            followers = new ArrayList<>();
-                        }
-                        followers.add(ParseUser.getCurrentUser().getUsername());
-                        society.put("followers", followers);
-                        society.saveInBackground(new SaveCallback() {
-                            @Override
-                            public void done(ParseException e) {
-                                if (e == null) {
-                                    Log.i("user", "added into course followers");
-                                    followSuccess++;
-                                } else {
-                                    Log.i("user", "failed to add into course followers");
-                                }
-                            }
-                        });
-                    }
-                } else {
-                    Log.i("course query", "not found during follow");
-                }
-            }
-        });
-
-        if (followSuccess == 1) {
-            // @grant commented it out as it was causing the app to crash
-            //scheduleJob();
-        }
-
-        //TODO: THE BUTTON NEEDS TO BE SELECTED
 
     }
 
@@ -374,56 +333,7 @@ public class EnrolList extends AppCompatActivity {
             }
         });
 
-        //remove from courses followed list
-        ParseQuery<ParseObject> courseQuery = new ParseQuery<ParseObject>("Courses");
-        courseQuery.whereEqualTo("courseCode", courseCode);
-        courseQuery.findInBackground(new FindCallback<ParseObject>() {
-            @Override
-            public void done(List<ParseObject> objects, ParseException e) {
-                if (e == null && objects.size() == 1) {
-                    //Course object found
-                    //only 1 object should have this course code
-                    for (ParseObject course : objects) {
-                        List<String> followers = course.getList("followers");
-                        //followers should never be null technically
-                        if (followers == null) {
-                            followers = new ArrayList<>();
-                        }
-                        followers.remove(ParseUser.getCurrentUser().getUsername());
-                        course.put("followers", followers);
-                        course.saveInBackground(new SaveCallback() {
-                            @Override
-                            public void done(ParseException e) {
-                                if (e == null) {
-                                    Log.i("user", "removed from course followers");
-                                } else {
-                                    Log.i("user", "failed to remove from course followers");
-                                }
-                            }
-                        });
-                    }
-                } else {
-                    Log.i("course query", "not found during unfollow");
-                }
-            }
-        });
-        //TODO: THE FOLLOW BUTTON NEEDS TO BE UNSELECTED
     }
 
-//    public void scheduleJob() {
-//        FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(getApplicationContext()));
-//        Job job = dispatcher.newJobBuilder()
-//                .setService(MyJobService.class)
-//                .setRecurring(true)
-//                .setReplaceCurrent(true)
-//                .setLifetime(Lifetime.FOREVER)
-//                .setTrigger(Trigger.executionWindow(0, 60))
-//                .setConstraints(
-//                        Constraint.ON_ANY_NETWORK
-//                ).build();
-//
-//        dispatcher.mustSchedule(job);
-//
-//    }
 
 }
