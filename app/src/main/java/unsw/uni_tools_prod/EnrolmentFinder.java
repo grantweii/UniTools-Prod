@@ -155,6 +155,7 @@ public class EnrolmentFinder extends AppCompatActivity implements AdapterView.On
             i = i.replaceAll("&gt[^0-9]+", "");
             i = i.replaceAll(" Enr ", "  ");
             i = i.replaceAll(" Rel ", "  ");
+            i = i.replaceAll(" Auto ", "  " );
             i = i.replaceAll("\\* ", "   ");
             i = i.replaceAll("  +", "|");
             i = i.replaceAll(",\n", "\n");

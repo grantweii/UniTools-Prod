@@ -23,6 +23,9 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -164,8 +167,8 @@ public class EnrolList extends AppCompatActivity {
 
 
                 String enrolRatio[] = dets[4].split("/");
-                int enrols = Integer.valueOf(enrolRatio[0]);
-                int capacity = Integer.valueOf(enrolRatio[1]);
+                int enrols = Integer.valueOf(enrolRatio[0].replaceAll(" .*", ""));
+                int capacity = Integer.valueOf(enrolRatio[1].replaceAll(" .*", ""));
                 if(capacity - enrols <= 0) {
                     final Button followCourse = new Button(this);
                     final String followId = courseName + "_" + recv.getExtras().getString("semester") + "_" + dets[2];
@@ -205,6 +208,36 @@ public class EnrolList extends AppCompatActivity {
             View.OnClickListener onclicklistener = new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+
+                    /* REMOVE
+
+                    try {
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(getAssets().open("finalCourseList.txt")));
+                        String line;
+                        String name = "";
+                        String type = "";
+                        int i = 0;
+                        while ((line = reader.readLine()) != null) {
+                            if (i % 2 == 0) {
+                                name = line.replaceAll(" *", "");
+                            } else {
+                                type = line.replaceAll(" *", "");
+                                ParseObject newCourse = new ParseObject("UpdatedCourses");
+                                newCourse.put("UG", type);
+                                newCourse.put("courseCode", name);
+                                newCourse.saveInBackground();
+                            }
+                            i++;
+
+                        }
+                    } catch (IOException ex){
+                        ex.printStackTrace();
+                    }
+
+                    REMOVE
+                    */
+
+
                     Integer visib = View.GONE;
                     if(expand.getText() == " - ") {
                         expand.setText(" + ");
