@@ -1,6 +1,7 @@
 package unsw.uni_tools_prod;
 
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -30,6 +31,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -111,13 +113,17 @@ public class EnrolList extends AppCompatActivity {
                 courseName = m.group(1);
             }
 
-            if (isUndergrad(courseName)) {
-                html += "undergraduate/courses/2019/";
-            } else {
+            if (isUndergrad(courseName).equals("null")) {
+                html = "<a href=\"https://www.google.com.au/search?q=" + courseName + "+unsw";
+                html += "\">" + t[0] + "</a>";
+            } else if (isUndergrad(courseName).equals("postgrad")) {
                 html += "postgraduate/courses/2019/";
+                html += (courseName + "/\">" + t[0] + "</a>");
+            } else {
+                html += "undergraduate/courses/2019/";
+                html += (courseName + "/\">" + t[0] + "</a>");
             }
 
-            html += (courseName + "/\">" + t[0] + "</a>");
             t1.setMovementMethod(LinkMovementMethod.getInstance());
             t1.setText(Html.fromHtml(html));
 
@@ -208,36 +214,6 @@ public class EnrolList extends AppCompatActivity {
             View.OnClickListener onclicklistener = new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
-                    /* REMOVE
-
-                    try {
-                        BufferedReader reader = new BufferedReader(new InputStreamReader(getAssets().open("finalCourseList.txt")));
-                        String line;
-                        String name = "";
-                        String type = "";
-                        int i = 0;
-                        while ((line = reader.readLine()) != null) {
-                            if (i % 2 == 0) {
-                                name = line.replaceAll(" *", "");
-                            } else {
-                                type = line.replaceAll(" *", "");
-                                ParseObject newCourse = new ParseObject("UpdatedCourses");
-                                newCourse.put("UG", type);
-                                newCourse.put("courseCode", name);
-                                newCourse.saveInBackground();
-                            }
-                            i++;
-
-                        }
-                    } catch (IOException ex){
-                        ex.printStackTrace();
-                    }
-
-                    REMOVE
-                    */
-
-
                     Integer visib = View.GONE;
                     if(expand.getText() == " - ") {
                         expand.setText(" + ");
@@ -261,16 +237,16 @@ public class EnrolList extends AppCompatActivity {
         }
     }
 
-    public Boolean isUndergrad(String str) {
+    public String isUndergrad(String str) {
 
-        Boolean result = false;
+        String result = null;
         //Map<String, String> map = new HashMap<String, String>();
-        ParseQuery<ParseObject> courseQuery = new ParseQuery<ParseObject>("Courses");
+        ParseQuery<ParseObject> courseQuery = new ParseQuery<ParseObject>("UpdatedCourses");
         courseQuery.setLimit(6000);
         courseQuery.whereEqualTo("courseCode", str);
         try {
             ParseObject objects = courseQuery.getFirst();
-            result = (Boolean) objects.get("UG");
+            result = (String) objects.get("UG");
         } catch (Exception e) {
             e.printStackTrace();
         }
