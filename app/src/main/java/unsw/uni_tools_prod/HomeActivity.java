@@ -8,6 +8,8 @@ import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.nfc.Tag;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
@@ -23,6 +25,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.parse.ParseAnalytics;
@@ -37,6 +41,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -80,7 +85,7 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-
+        /*
         recyclerView = findViewById(R.id.recyclerView);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
@@ -88,7 +93,113 @@ public class HomeActivity extends AppCompatActivity {
         recyclerView.setAdapter(courseAdapter);
         getFollowedCourses();
         courseAdapter.notifyDataSetChanged();
+        */
+
+        getFollowedCourses();
+        final TableLayout table = findViewById(R.id.followedTable);
+        ArrayList<String> colNames = new ArrayList<>();
+        colNames.add("  Type        ");
+        colNames.add("  Class#        ");
+        colNames.add("  Status        ");
+        colNames.add("  Capacity      ");
+        colNames.add("  Unfollow      ");
+
+        TableRow headers = new TableRow(this);
+        for (String s : colNames) {
+            TextView t = new TextView(this);
+            t.setText(s);
+            t.setTypeface(t.getTypeface(), Typeface.BOLD);
+            t.setTextColor(Color.BLACK);
+            headers.addView(t);
+        }
+        table.addView(headers);
+
+        ArrayList<String> headings = new ArrayList<String>();
+        for(Course course : courseList) {
+            String[] code = course.getCodeTerm().split("_");
+            String faculty = code[0].substring(0, 4);
+            String term = code[1];
+            String id = code[2];
+            String url = "http://classutil.unsw.edu.au/" + faculty + "_" + term + ".html";
+            String html = "";
+            try {
+                html = getHTML(url);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            String pattern = "a name=\"" + code[0] + ".*?colspan=[2|\"8\"]";
+            Pattern p = Pattern.compile(pattern, Pattern.DOTALL);
+            Matcher m = p.matcher(html);
+
+            while (m.find()) {
+                String[] classes = m.group(0).replaceAll(">([A-Z]{3})<", ">\n$1<").split("\n");
+                for(String line : classes) {
+                    if(line.equals(classes[0])) {
+                        line = line.replaceAll("([A-Z]{4}[0-9]{4}).*center>(.*)", "$1|$2");
+                        line = line.replaceAll("a name=\"", "");
+                        line = line.replaceAll("<.*", "");
+                        line = line.replaceAll("\\|", " - ");
+                        line = line.replaceAll("&amp;", "\\&");
+
+                        TableRow name = new TableRow(this);
+                        TextView t = new TextView(this);
+
+                        if(headings.contains(line)) {
+                            t.setText("");
+                        }
+                        else {
+                            t.setText(line);
+                            headings.add(line);
+                        }
+
+                        TableRow.LayoutParams params = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT);
+                        params.span = 7;
+                        t.setLayoutParams(params);
+                        t.setTypeface(t.getTypeface(), Typeface.BOLD);
+                        name.addView(t);
+                        table.addView(name);
+                    }
+                    if(line.contains(id)) {
+                        line = line.replaceAll("<[^>]+>", "|");
+                        line = line.replaceAll(" |", "");
+                        line = line.replaceAll("\\|\\|", "|");
+                        line = line.replaceAll("\\|+<.*", "");
+
+                        String[] fields = line.split("\\|");
+                        if(fields.length >= 8) {
+                            TableRow info = new TableRow(this);
+                            for(String i : fields) {
+                                if(i.equals(fields[1]) || i.equals(fields[3]) || i.equals(fields[6])) {
+                                    continue;
+                                }
+                                if(i.equals(fields[7])) {
+                                    table.addView(info);
+                                    String[] classTimes = i.split(";");
+                                    for(String j : classTimes) {
+                                        TableRow times = new TableRow(this);
+                                        TextView time = new TextView(this);
+                                        time.setText("    - " + j + "  ");
+                                        TableRow.LayoutParams params = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT);
+                                        params.span = 7;
+                                        time.setLayoutParams(params);
+                                        times.addView(time);
+                                        table.addView(times);
+                                    }
+                                    break;
+                                }
+
+                                TextView t = new TextView(this);
+                                t.setText("  " + i + "  ");
+                                info.addView(t);
+                            }
+                        }
+                    }
+                }
+            }
+        }
         Log.i(TAG, "oncreate");
+
     }
 
     @Override
@@ -166,6 +277,22 @@ public class HomeActivity extends AppCompatActivity {
         JobScheduler scheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
         scheduler.cancel(123);
         Log.i(TAG, "Job cancelled");
+    }
+
+    // All credit for the getHTML function goes to Kalpak
+    // Source: https://stackoverflow.com/questions/1485708/how-do-i-do-a-http-get-in-java
+    public String getHTML(String urlToRead) throws Exception {
+        StringBuilder result = new StringBuilder();
+        URL url = new URL(urlToRead);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+        String line;
+        while ((line = rd.readLine()) != null) {
+            result.append(line);
+        }
+        rd.close();
+        return result.toString();
     }
 
 }
